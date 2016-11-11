@@ -33,7 +33,7 @@ public class User extends AbstractEntity {
     private Map<String, StockHolding> portfolio;
 
     // TODO - add cash to user class
-
+    
     public User(String userName, String password) {
         this.hash = PasswordHash.getHash(password);
         this.userName = userName;
