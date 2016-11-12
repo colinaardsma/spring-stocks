@@ -133,7 +133,9 @@ public class StockHolding extends AbstractEntity {
     public static StockHolding buyShares(User user, String symbol, int numberOfShares) throws StockLookupException {
 
     	symbol = symbol.toUpperCase();
-
+    	
+		Stock stock = Stock.lookupStock(symbol);
+    	
         // Get existing holding
         Map<String, StockHolding> userPortfolio = user.getPortfolio();
         StockHolding holding;
@@ -148,7 +150,13 @@ public class StockHolding extends AbstractEntity {
         holding = userPortfolio.get(symbol);
         holding.buyShares(numberOfShares);
         
-       // TODO - update user cash on buy
+        // update user cash on buy
+		float stock_price = stock.getPrice();    	
+    	float userCash = user.getCash();
+    	float transactionPrice = (float) stock_price * (float) numberOfShares;
+    	float newUserCashBalance = userCash - transactionPrice;
+    	
+        user.setCash(newUserCashBalance);
 
         return holding;
     }
@@ -165,6 +173,8 @@ public class StockHolding extends AbstractEntity {
     public static StockHolding sellShares(User user, String symbol, int numberOfShares) throws StockLookupException {
 
     	symbol = symbol.toUpperCase();
+    	
+		Stock stock = Stock.lookupStock(symbol);
 
         // Get existing holding
         Map<String, StockHolding> userPortfolio = user.getPortfolio();
@@ -179,6 +189,12 @@ public class StockHolding extends AbstractEntity {
         holding.sellShares(numberOfShares);
 
         // TODO - update user cash on sale
+		float stock_price = stock.getPrice();    	
+    	float userCash = user.getCash();
+    	float transactionPrice = (float) stock_price * (float) numberOfShares;
+    	float newUserCashBalance = userCash + transactionPrice;
+    	
+        user.setCash(newUserCashBalance);
 
         return holding;
     }

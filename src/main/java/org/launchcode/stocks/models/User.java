@@ -26,18 +26,19 @@ public class User extends AbstractEntity {
 
     private String userName;
     private String hash;
+    private float cash;
 
     /**
      * A collection of all the StockHoldings this user owns. The keys are stock symbols, ie "YHOO"
      */
     private Map<String, StockHolding> portfolio;
-
-    // TODO - add cash to user class
+    
     
     public User(String userName, String password) {
         this.hash = PasswordHash.getHash(password);
         this.userName = userName;
         this.portfolio = new HashMap<String, StockHolding>();
+        this.cash = Float.parseFloat("1000000.59"); // decimal falls off, need to fix
     }
 
     // empty constructor so Hibernate can do its magic
@@ -52,6 +53,17 @@ public class User extends AbstractEntity {
     protected void setUserName(String userName){
         this.userName = userName;
     }
+
+    @NotNull
+    @Column(name = "cash")
+    public float getCash() {
+        return cash;
+    }
+
+    protected void setCash(float cash) {
+        this.cash = cash;
+    }
+
 
     @NotNull
     @Column(name = "hash")

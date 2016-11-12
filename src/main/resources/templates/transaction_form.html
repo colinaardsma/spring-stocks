@@ -12,6 +12,8 @@
 
     <div id="middle">
 
+     	<p style="color:red" th:text="${error}"></p>
+
         <form method="post" th:action="${action}" th:fragment="form">
             <fieldset>
                 <div class="form-group">

@@ -11,6 +11,8 @@
     <div id="top" th:include="template :: masthead"></div>
 
     <div id="middle">
+    
+    	<p style="color:red" th:text="${error}"></p>
 
         <form method="post" action="/quote" th:fragment="form">
             <fieldset>

@@ -31,7 +31,7 @@ public class AuthenticationController extends AbstractController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(String userName, String password, String confirmPassword, Model model) {
+    public String register(String userName, String password, String confirmPassword, HttpServletRequest request, Model model) {
 
         // Perform some validation
         User existingUser = userDao.findByUserName(userName);
@@ -46,6 +46,9 @@ public class AuthenticationController extends AbstractController {
         // Validation passed. Create and persist a new User entity
         User newUser = new User(userName, password);
         userDao.save(newUser);
+        
+        request.getSession().setAttribute(userSessionKey, newUser.getUid());
+
 
         return "index";
     }
