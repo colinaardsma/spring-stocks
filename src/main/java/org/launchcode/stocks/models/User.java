@@ -38,7 +38,7 @@ public class User extends AbstractEntity {
         this.hash = PasswordHash.getHash(password);
         this.userName = userName;
         this.portfolio = new HashMap<String, StockHolding>();
-        this.cash = Float.parseFloat("1000000.59"); // decimal falls off, need to fix
+        this.cash = 1000000; // decimal falls off, need to fix (this may be a mysql prob)
     }
 
     // empty constructor so Hibernate can do its magic
@@ -57,7 +57,7 @@ public class User extends AbstractEntity {
     @NotNull
     @Column(name = "cash")
     public float getCash() {
-        return cash;
+        return (float) cash;
     }
 
     protected void setCash(float cash) {

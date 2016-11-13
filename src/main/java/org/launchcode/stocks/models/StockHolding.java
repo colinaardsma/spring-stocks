@@ -36,12 +36,15 @@ public class StockHolding extends AbstractEntity {
     private StockHolding() {}
 
     private StockHolding(String symbol, int ownerId) {
-        // TODO - make sure symbol is always upper or lowercase (your choice)
         this.symbol = symbol.toUpperCase();
         this.sharesOwned = 0;
         this.ownerId = ownerId;
         transactions = new ArrayList<StockTransaction>();
     }
+    
+//    private StockHolding(String name, String symbol, float price) {
+//    	
+//    }
 
     @NotNull
     @Column(name = "owner_id")
@@ -153,7 +156,7 @@ public class StockHolding extends AbstractEntity {
         // update user cash on buy
 		float stock_price = stock.getPrice();    	
     	float userCash = user.getCash();
-    	float transactionPrice = (float) stock_price * (float) numberOfShares;
+    	float transactionPrice = (float) stock_price * numberOfShares;
     	float newUserCashBalance = userCash - transactionPrice;
     	
         user.setCash(newUserCashBalance);

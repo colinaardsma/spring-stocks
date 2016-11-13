@@ -40,7 +40,6 @@ public class StockController extends AbstractController {
 
         // Implement quote lookup
     	String error;
-    	
     	Stock stock;
 		try {
 			stock = Stock.lookupStock(symbol);
@@ -75,46 +74,41 @@ public class StockController extends AbstractController {
 
     @RequestMapping(value = "/buy", method = RequestMethod.POST)
     public String buy(String symbol, int numberOfShares, HttpServletRequest request, Model model) {
+  
+        model.addAttribute("title", "Buy");
+        model.addAttribute("action", "/buy");
+        model.addAttribute("buyNavClass", "active");
     	
         Integer userId = (Integer) request.getSession().getAttribute(AbstractController.userSessionKey);
         User user = userDao.findByUid(userId);
-        String error;
         
+        String error;
 		Stock stock;
+
+		// Implement buy action
 		try {
 			stock = Stock.lookupStock(symbol);
-		} catch (StockLookupException e1) {
-			e1.printStackTrace();
-			error = "Invalid symbol";
-	        return "transaction_form";
-		}
-
-    	// see if user has enough cash to purchase
-		double stock_price = stock.getPrice();    	
-		double userCash = user.getCash();
-		double transactionPrice = stock_price * numberOfShares;
-    	
-    	if (transactionPrice > userCash) {
-    		error = "Not enough cash for purchase";
-            model.addAttribute("error", error);
-	        return "transaction_form";
-    	}
-        
-        // Implement buy action
-        try {
+			
+	    	// see if user has enough cash to purchase
+			float stock_price = stock.getPrice();    	
+	    	float userCash = user.getCash();
+	    	float transactionCost = stock_price * numberOfShares;
+	    	
+	    	if (transactionCost > userCash) {
+	    		error = "Not enough cash for purchase";
+	            model.addAttribute("error", error);
+		        return "transaction_form";
+	    	}
+	        
 			StockHolding holding = StockHolding.buyShares(user, symbol, numberOfShares);
 			stockHoldingDao.save(holding);
 		} catch (StockLookupException e) {
 			e.printStackTrace();
 			error = "Invalid symbol";
-            model.addAttribute("error", error);
-			return "transaction_form";
+	    	model.addAttribute("error", error);
+	        return "transaction_form";
 		}
         
-        model.addAttribute("title", "Buy");
-        model.addAttribute("action", "/buy");
-        model.addAttribute("buyNavClass", "active");
-
         return "transaction_confirm";
     }
 
@@ -129,28 +123,38 @@ public class StockController extends AbstractController {
     @RequestMapping(value = "/sell", method = RequestMethod.POST)
     public String sell(String symbol, int numberOfShares, HttpServletRequest request, Model model) {
 
-        // Implement sell action
-        Integer userId = (Integer) request.getSession().getAttribute(AbstractController.userSessionKey);
-        User user = userDao.findByUid(userId);
-        String error;
-        
-        try {
-        	StockHolding h = stockHoldingDao.findBySymbolAndOwnerId(symbol, userId);
-			StockHolding holding = StockHolding.sellShares(user, h.getSymbol(), numberOfShares);
-
-//			StockHolding holding = StockHolding.sellShares(user, symbol, numberOfShares);
-			stockHoldingDao.save(holding);
-		} catch (StockLookupException e) {
-			e.printStackTrace();
-			error = "Invalid symbol";
-            model.addAttribute("error", error);
-			return "transaction_form";
-		}
-        
         model.addAttribute("title", "Sell");
         model.addAttribute("action", "/sell");
         model.addAttribute("sellNavClass", "active");
 
+        Integer userId = (Integer) request.getSession().getAttribute(AbstractController.userSessionKey);
+        User user = userDao.findByUid(userId);
+        
+        String error;
+        
+        // Implement sell action
+        try {
+            StockHolding h = stockHoldingDao.findBySymbolAndOwnerId(symbol, userId);
+            
+            // check if shares owned
+        	int sharesOwned = h.getSharesOwned();
+            if (numberOfShares > sharesOwned) {
+        		error = "Not enough shares owned";
+                model.addAttribute("error", error);
+    	        return "transaction_form";
+            }
+            
+			StockHolding holding = StockHolding.sellShares(user, h.getSymbol(), numberOfShares);
+			stockHoldingDao.save(holding);
+		} catch (StockLookupException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e1) {
+			e1.printStackTrace();
+			error = "Invalid symbol or stock not owned";
+            model.addAttribute("error", error);
+			return "transaction_form";
+		}
+        
         return "transaction_confirm";
     }
 
