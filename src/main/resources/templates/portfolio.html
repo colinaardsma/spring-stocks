@@ -12,16 +12,22 @@
 
         <p>Portfolio!</p>
         <table style="margin: auto">
-        <tr><th>Stock</th><th>Symbol</th><th>Shares</th><th>Current Price</th><th>Total Value</th></tr>
+        <tr><th style="padding-right: 2em">Stock</th>
+        	<th style="padding-right: 2em">Symbol</th>
+        	<th style="padding-right: 2em">Shares</th>
+        	<th style="padding-right: 2em">Current Price</th>
+        	<th>Total Value</th>
+        </tr>
         <tr th:each="holding : ${portfolio}">
-        	<td style="padding-right: 2em" th:text="${holding[0]}"></td>
-        	<td style="padding-right: 2em" th:text="${holding[1]}"></td>
-        	<td style="padding-right: 2em" th:text="${holding[2]}"></td>
-        	<td style="padding-right: 2em" th:text="'$' + ${holding[3]}"></td>
-        	<td th:text="'$' + ${holding[4]}"></td>
+        	<td style="padding-right: 2em" th:text="${holding.name}"></td>
+        	<td style="padding-right: 2em" th:text="${holding.symbol}"></td>
+        	<td style="padding-right: 2em" th:text="${holding.sharesOwned}"></td>
+        	<td style="padding-right: 2em" th:text="'$' + ${#numbers.formatDecimal(holding.currentValue, 0, 'DEFAULT', 2, 'DEFAULT')}"></td>
+        	<td th:text="'$' + ${#numbers.formatDecimal(holding.totalValue, 0, 'DEFAULT', 2, 'DEFAULT')}"></td>
 		</tr>
 	</table>
-	<p th:text="'Total portfolio value: $' + ${#numbers.formatDecimal(portfolioValue, 0, 'DEFAULT', 2, 'DEFAULT')}"></p>
+	<br/>
+	<h4 th:text="'Total portfolio value: $' + ${#numbers.formatDecimal(portfolioValue, 0, 'DEFAULT', 2, 'DEFAULT')}"></h4>
     </div>
 
     <div th:replace="template :: footer"></div>

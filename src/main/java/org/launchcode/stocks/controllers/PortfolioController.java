@@ -30,42 +30,43 @@ public class PortfolioController extends AbstractController {
         
         // Implement portfolio display
     	List<StockHolding> shHoldings = stockHoldingDao.findByOwnerId(userId);
-    	List<ArrayList<String>> portfolio = new ArrayList<ArrayList<String>>();
+    	List<StockHolding> portfolio = new ArrayList<StockHolding>();
     	float portfolioValue = 0;
 
     	for (StockHolding holding : shHoldings) {
     		try {
-    	    	ArrayList<String> holdings = new ArrayList<String>();
 				Stock stock = Stock.lookupStock(holding.getSymbol());
-				holdings.add(stock.getName());
-				holdings.add(holding.getSymbol());
-				holdings.add(Integer.toString(holding.getSharesOwned()));
-				holdings.add(Float.toString(stock.getPrice()));
+    			StockHolding sh = new StockHolding(stock.getName(), holding.getSymbol(), stock.getPrice(), holding.getSharesOwned(), userId);
+				portfolio.add(sh);
 				float holdingValue = (float) holding.getSharesOwned() * stock.getPrice();
-				holdings.add(Float.toString(holdingValue));
-				portfolio.add(holdings);
 				portfolioValue+=holdingValue;
 			} catch (StockLookupException e) {
 				e.printStackTrace();
 			}
     	}
     	
-//        // attempt to display holdings using a new stockholding object
+//		// list of lists version of portfolio display (need to change things in stockholding.java and portfolio.html to work)    	
 //    	List<StockHolding> shHoldings = stockHoldingDao.findByOwnerId(userId);
-//    	List<StockHolding> portfolio = new ArrayList<StockHolding>();
+//    	List<ArrayList<String>> portfolio = new ArrayList<ArrayList<String>>();
 //    	float portfolioValue = 0;
 //
 //    	for (StockHolding holding : shHoldings) {
 //    		try {
+//    	    	ArrayList<String> holdings = new ArrayList<String>();
 //				Stock stock = Stock.lookupStock(holding.getSymbol());
-//    			StockHolding sh = new StockHolding(stock.getName(), holding.getSymbol(), stock.getPrice(), holding.getSharesOwned(), userId);
-//				portfolio.add(sh);
+//				holdings.add(stock.getName());
+//				holdings.add(holding.getSymbol());
+//				holdings.add(Integer.toString(holding.getSharesOwned()));
+//				holdings.add(Float.toString(stock.getPrice()));
 //				float holdingValue = (float) holding.getSharesOwned() * stock.getPrice();
+//				holdings.add(Float.toString(holdingValue));
+//				portfolio.add(holdings);
 //				portfolioValue+=holdingValue;
 //			} catch (StockLookupException e) {
 //				e.printStackTrace();
 //			}
 //    	}
+
     	
     	model.addAttribute("portfolioValue", portfolioValue);
     	model.addAttribute("portfolio", portfolio);

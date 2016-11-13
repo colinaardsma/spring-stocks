@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -26,13 +27,12 @@ public class StockHolding extends AbstractEntity {
     private int sharesOwned;
     private int ownerId;
     
-//    // trying to display portfolio using stockholding constructor
-//    // variables for displaying on portfolio page only
-//    @SuppressWarnings("unused")
-//	private String name;
-//    private float currentValue;
-//    @SuppressWarnings("unused")
-//	private float totalValue;
+    // trying to display portfolio using stockholding constructor
+    // variables for displaying on portfolio page only
+	
+    private String name;
+    private float currentValue;
+	private float totalValue;
 
     /**
      * The history of past transactions in which this user bought or sold shares from this stock holding
@@ -40,32 +40,46 @@ public class StockHolding extends AbstractEntity {
     private List<StockTransaction> transactions;
 
 
-
+    @SuppressWarnings("unused")
     private StockHolding() {}
 
     private StockHolding(String symbol, int ownerId) {
-        // TODO - make sure symbol is always upper or lowercase (your choice)
         this.symbol = symbol.toUpperCase();
         this.sharesOwned = 0;
         this.ownerId = ownerId;
         transactions = new ArrayList<StockTransaction>();
     }
     
-//    // trying to display portfolio using constructor
-//    // constructor for displaying on portfolio page only
-//    public StockHolding(String name, String symbol, float price, int shares, int ownerId) {
-//        try {
-//			Stock stock = Stock.lookupStock(symbol.toUpperCase());
-//	        this.name = name;
-//	    	this.symbol = symbol.toUpperCase();
-//	        this.sharesOwned = shares;
-//	        this.currentValue = stock.getPrice();
-//	        this.totalValue = (float) this.sharesOwned * this.currentValue;
-//	        this.ownerId = ownerId;
-//		} catch (StockLookupException e) {
-//			e.printStackTrace();
-//		}        
-//    }
+    // constructor for displaying on portfolio page only
+    public StockHolding(String name, String symbol, float price, int shares, int ownerId) {
+        try {
+			Stock stock = Stock.lookupStock(symbol.toUpperCase());
+	        this.name = name;
+	    	this.symbol = symbol.toUpperCase();
+	        this.sharesOwned = shares;
+	        this.currentValue = stock.getPrice();
+	        this.totalValue = (float) this.sharesOwned * this.currentValue;
+	        this.ownerId = ownerId;
+		} catch (StockLookupException e) {
+			e.printStackTrace();
+		}        
+    }
+    
+    // getters for displaying on portfolio page only
+    @Transient
+    public String getName() {
+    	return name;
+    }
+
+    @Transient
+    public float getCurrentValue() {
+    	return currentValue;
+    }
+
+    @Transient
+    public float getTotalValue() {
+    	return totalValue;
+    }
 
     @NotNull
     @Column(name = "owner_id")
