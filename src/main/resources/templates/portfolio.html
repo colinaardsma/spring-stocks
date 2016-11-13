@@ -10,19 +10,18 @@
 
     <div id="middle">
 
-        <!-- TODO - Display portfolio -->
         <p>Portfolio!</p>
-        <table align="center">
+        <table style="margin: auto">
         <tr><th>Stock</th><th>Symbol</th><th>Shares</th><th>Current Price</th><th>Total Value</th></tr>
         <tr th:each="holding : ${portfolio}">
-        	<td style="padding-right:2em" th:text="${holding[0]}"></td>
-        	<td style="padding-right:2em" th:text="${holding[1]}"></td>
-        	<td style="padding-right:2em" th:text="${holding[2]}"></td>
-        	<td style="padding-right:2em" th:text="'$' + ${holding[3]}"></td>
+        	<td style="padding-right: 2em" th:text="${holding[0]}"></td>
+        	<td style="padding-right: 2em" th:text="${holding[1]}"></td>
+        	<td style="padding-right: 2em" th:text="${holding[2]}"></td>
+        	<td style="padding-right: 2em" th:text="'$' + ${holding[3]}"></td>
         	<td th:text="'$' + ${holding[4]}"></td>
 		</tr>
 	</table>
-	<p th:text="'Total portfolio value: $' + ${portfolioValue}"></p>
+	<p th:text="'Total portfolio value: $' + ${#numbers.formatDecimal(portfolioValue, 0, 'DEFAULT', 2, 'DEFAULT')}"></p>
     </div>
 
     <div th:replace="template :: footer"></div>

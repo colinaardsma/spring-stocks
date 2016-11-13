@@ -50,6 +50,23 @@ public class PortfolioController extends AbstractController {
 			}
     	}
     	
+//        // attempt to display holdings using a new stockholding object
+//    	List<StockHolding> shHoldings = stockHoldingDao.findByOwnerId(userId);
+//    	List<StockHolding> portfolio = new ArrayList<StockHolding>();
+//    	float portfolioValue = 0;
+//
+//    	for (StockHolding holding : shHoldings) {
+//    		try {
+//				Stock stock = Stock.lookupStock(holding.getSymbol());
+//    			StockHolding sh = new StockHolding(stock.getName(), holding.getSymbol(), stock.getPrice(), holding.getSharesOwned(), userId);
+//				portfolio.add(sh);
+//				float holdingValue = (float) holding.getSharesOwned() * stock.getPrice();
+//				portfolioValue+=holdingValue;
+//			} catch (StockLookupException e) {
+//				e.printStackTrace();
+//			}
+//    	}
+    	
     	model.addAttribute("portfolioValue", portfolioValue);
     	model.addAttribute("portfolio", portfolio);
         model.addAttribute("title", "Portfolio");
