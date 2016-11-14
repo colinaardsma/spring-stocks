@@ -226,7 +226,7 @@ public class StockHolding extends AbstractEntity {
         holding = userPortfolio.get(symbol);
         holding.sellShares(numberOfShares);
 
-        // TODO - update user cash on sale
+        // update user cash on sale
 		float stock_price = stock.getPrice();    	
     	float userCash = user.getCash();
     	float transactionPrice = (float) stock_price * (float) numberOfShares;
